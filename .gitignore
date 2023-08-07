@@ -1,0 +1,6 @@
+/workdir/
+/.*.done
+.local_config.mk
+vars.mk
+output/
+sdk/

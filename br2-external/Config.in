@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL_AARCH64_TOOLS_PATH/package/Config.in"

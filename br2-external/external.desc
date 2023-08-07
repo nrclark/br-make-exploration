@@ -1,0 +1,2 @@
+name: AARCH64_TOOLS
+desc: Config and customizations for RISC-V QEMU tests.
