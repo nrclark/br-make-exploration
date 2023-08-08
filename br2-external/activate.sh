@@ -30,14 +30,11 @@ else
         export PATH="${_sdk_dir}/bin:${PATH}"
     fi
 
-    CROSS_COMPILE="$(find "${_sdk_dir}/bin" | grep 'gcc$' | \
-                     awk '(NR == 1 || length < length(shortest)) \
-                     { shortest = $0 } END { print shortest }' | \
-                     sed 's@.*/@@g' | sed 's/gcc$//g')"
-     
+    #@cmd_exports@
+    #@flag_exports@
+
+    CROSS_COMPILE="$(echo "$CC" | sed 's/-gcc$/-/g')"
     export CROSS_COMPILE
-    export CC="${CROSS_COMPILE}gcc"
-    export CXX="${CROSS_COMPILE}g++"
 
     unset _sdk_dir
     unset _get_scriptdir
