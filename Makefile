@@ -22,6 +22,7 @@ submodules: .submodules.done
 
 defconfig: $(BUILD_DIR)/.config
 $(BUILD_DIR)/.config: br2-external/configs/$(DEFCONFIG) .submodules.done
+	mkdir -p $(dir $@)
 	$(MAKE) --no-print-directory -C buildroot \
 	    BR2_EXTERNAL=$(abspath br2-external) \
 	    O=$(abspath $(BUILD_DIR)) $(DEFCONFIG)
@@ -70,14 +71,13 @@ br-: | $(BUILD_DIR)/.config
 br-%: private SHELL := /bin/bash
 br-%: | $(BUILD_DIR)/.config
 # Asks Buildroot to build %, whatever that might be.
-	$(BR_MAKE) $*
+	+$(BR_MAKE) $*
 
 #------------------------------------------------------------------------------#
 
 build: private SHELL := /bin/bash
-build: .submodules.done
-	$(MAKE) --no-print-directory defconfig DEFCONFIG=$(DEFCONFIG)
-	$(BR_MAKE) all
+build: $(BUILD_DIR)/.config
+	+$(BR_MAKE) all
 
 menuconfig: | $(BUILD_DIR)/.config
 # Run Buildroot's menuconfig. On successful completion, export the defconfig
@@ -94,7 +94,8 @@ menuconfig: | $(BUILD_DIR)/.config
 
 SDK_NAME := aarch64-buildroot-linux-gnu_sdk-buildroot.tar.gz
 $(BUILD_COMMON)/$(BOARD_NAME)/images/$(SDK_NAME): $(shell find br2-external -type f)
-	$(BR_MAKE) sdk
+$(BUILD_COMMON)/$(BOARD_NAME)/images/$(SDK_NAME): br-sdk
+	@printf ""
 
 output/$(SDK_NAME): $(BUILD_COMMON)/$(BOARD_NAME)/images/$(SDK_NAME)
 	mkdir -p $(dir $@)
